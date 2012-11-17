@@ -3,6 +3,7 @@
 
 #define SOLVE_BUTTON 1
 #define GEN_BUTTON 2
+#define EMPTY_BUTTON 3
 
 // Toutes les ressources sont ici : http://msdn.microsoft.com/en-us/library/windows/desktop/ms632586%28v=vs.85%29.aspx
 
@@ -14,6 +15,7 @@ void FillWindows(HWND);
 /* Quelques variables globales */
 char szClassName[ ] = "SudokuSolver";
 HINSTANCE globHInstance;
+HWND hwndButtonSudoku[81];
 
 void FillWindows(HWND windowsInstance){
     HWND hwndButtonRes = CreateWindow(
@@ -42,8 +44,35 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+    HWND hwndButtonClear = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Vider",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                230,         // x position
+                10,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)EMPTY_BUTTON,
+                globHInstance,
+                NULL
+                );
 
-    HWND hwndButtonSudoku[81]={NULL};
+    HWND hwndCredits = CreateWindow(
+                "STATIC",
+                "NF05 - Projet de Louis et Benjamin",
+                SS_SIMPLE | WS_VISIBLE | WS_CHILD,
+                140,
+                500,
+                250,
+                30,
+                windowsInstance,
+                NULL,
+                globHInstance,
+                NULL
+                );
+
+    //HWND hwndButtonSudoku[81]={NULL};
 
     int i=0;
     int j=0;
@@ -76,7 +105,6 @@ void FillWindows(HWND windowsInstance){
                 NULL
                 );
     }
-
 }
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
@@ -163,6 +191,14 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 }
 
 
+void viderSudoku(){
+    int i=0;
+    for(i=0;i<81;i++){
+        SetWindowText(hwndButtonSudoku[i]," ");
+    }
+    printf("Grille videe");
+}
+
 /* Cette fonction va gérer les clics sur les boutons */
 void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
     UINT iId=LOWORD(wParam);
@@ -176,6 +212,10 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton generer\n");
+            break;
+        case EMPTY_BUTTON:
+            // Demander à la fonction de vider la grille
+            viderSudoku();
             break;
         default:
             printf("Appui du bouton %d\n",iId);
