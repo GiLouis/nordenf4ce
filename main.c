@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <stdio.h>
+#include "sudoku.h"
 
 #define SOLVE_BUTTON 1
 #define GEN_BUTTON 2
@@ -196,7 +197,7 @@ void viderSudoku(){
     for(i=0;i<81;i++){
         SetWindowText(hwndButtonSudoku[i]," ");
     }
-    printf("Grille videe");
+    printf("Grille videe\n");
 }
 
 /* Cette fonction va gérer les clics sur les boutons */
