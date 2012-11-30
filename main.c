@@ -108,6 +108,17 @@ void FillWindows(HWND windowsInstance){
     }
 }
 
+int updateGrille(int* grille){
+    int i=0;
+    char tmp[2];
+    for(i=0;i<81;i++){
+        tmp[0]=grille[i]+48;
+        tmp[1]='\0';
+        SetWindowText(hwndButtonSudoku[i],tmp);
+    }
+    printf("Grille mise a jour\n");
+}
+
 int WINAPI WinMain (HINSTANCE hThisInstance,
                      HINSTANCE hPrevInstance,
                      LPSTR lpszArgument,
@@ -200,6 +211,7 @@ void viderSudoku(){
     printf("Grille videe\n");
 }
 
+
 /* Cette fonction va gérer les clics sur les boutons */
 void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
     UINT iId=LOWORD(wParam);
@@ -213,6 +225,7 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton generer\n");
+            genererSudoku();
             break;
         case EMPTY_BUTTON:
             // Demander à la fonction de vider la grille
