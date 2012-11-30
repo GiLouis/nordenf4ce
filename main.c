@@ -17,6 +17,7 @@ void FillWindows(HWND);
 char szClassName[ ] = "SudokuSolver";
 HINSTANCE globHInstance;
 HWND hwndButtonSudoku[81];
+int grille[81];
 
 void FillWindows(HWND windowsInstance){
     HWND hwndButtonRes = CreateWindow(
@@ -225,7 +226,7 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton generer\n");
-            genererSudoku();
+            generer(grille);
             break;
         case EMPTY_BUTTON:
             // Demander à la fonction de vider la grille
