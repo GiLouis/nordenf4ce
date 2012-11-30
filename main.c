@@ -111,10 +111,11 @@ void FillWindows(HWND windowsInstance){
 
 int updateGrille(int* grille){
     int i=0;
-    char tmp[2];
+    char tmp[3];
     for(i=0;i<81;i++){
-        tmp[0]=grille[i]+48;
-        tmp[1]='\0';
+        tmp[0]=grille[i]/10+48;
+        tmp[1]=grille[i]%10+48; // ligne utile en mode debug pour afficher le numero de la case
+        tmp[2]='\0';
         SetWindowText(hwndButtonSudoku[i],tmp);
     }
     printf("Grille mise a jour\n");
