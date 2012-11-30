@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <Windowsx.h>
 #include <stdio.h>
 #include "sudoku.h"
 #include <commctrl.h>
@@ -8,26 +9,158 @@
 #define EMPTY_BUTTON 3
 #define DEBUG_BUTTON 4
 #define OK_BUTTON 5
+#define ANNUL_BUTTON 6
+#define TEXT_EDIT 7
 
 // Toutes les ressources sont ici : http://msdn.microsoft.com/en-us/library/windows/desktop/ms632586%28v=vs.85%29.aspx
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK WindowProcedure2 (HWND, UINT, WPARAM, LPARAM);
 void gererActions(HWND, UINT, WPARAM, LPARAM);
-void FillWindowsCase(HWND);
+void FillWindowsCase(HWND windowsInstance);
 void FillWindows(HWND);
 
 /* Quelques variables globales */
 char szClassName[ ] = "SudokuSolver";
+char szClassName2[ ] = "Case";
+UINT dernierecasecliquee;
+
 HINSTANCE globHInstance;
 HWND hwndButtonSudoku[81];
+HWND hwndCtl;
 int grille[81];
 
 void FillWindowsCase(HWND windowsInstance){
+    char tmp[2]={0};
+    tmp[0]=grille[dernierecasecliquee-10]+48;
+    printf("----------------%d %c\n",dernierecasecliquee,tmp[0]);
+    if(tmp[0]==48){
+        tmp[0]='\0';
+    }
+    tmp[1]='\0';
 
+
+    char possib[31]={0};
+    strcat(possib,"Possibilités : ");
+    int * possibilitesTab;
+    possibilitesTab = verifValidite(dernierecasecliquee-10,grille);
+    int i=0;
+    char tmp2[2];
+    int premiereVirgule=0;
+    for(i=0;i<9;i++){
+        if(possibilitesTab[i]==1){
+            if(premiereVirgule){
+                strcat(possib,", ");
+            }
+            tmp2[0]=i+49;
+            tmp2[1]='\0';
+            strcat(possib,tmp2);
+            premiereVirgule=1;
+        }
+    }
+    printf("%s !\n",possib);
+
+    HWND hwndPossib = CreateWindow(
+                "STATIC",
+                possib,
+                SS_SIMPLE | WS_VISIBLE | WS_CHILD,
+                10,
+                10,
+                250,
+                30,
+                windowsInstance,
+                NULL,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndPossib, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
+    hwndCtl = CreateWindow(
+                "EDIT",  // Predefined class; Unicode assumed
+                tmp,      // Button text
+                WS_VISIBLE | WS_CHILD | ES_NUMBER ,  // Styles
+                10,         // x position
+                30,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)TEXT_EDIT,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndCtl, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
+    HWND hwndButtonCaseOk = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Valider",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
+                10,         // x position
+                60,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)OK_BUTTON,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndButtonCaseOk, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
 
 }
-void creerWindowsCase(){
+void creerWindowsCase(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
+
+    dernierecasecliquee = wParam;
+
+    WNDCLASSEX wincl;        /* Data structure for the windowclass */
+    HICON hIcon,hIconSM;     /* La ressource de l'icone */
+
+    hIcon = LoadImage(
+               hwnd,
+               "icon.ico",
+               IMAGE_ICON,
+               GetSystemMetrics(SM_CXICON),
+               GetSystemMetrics(SM_CYICON),
+               LR_DEFAULTCOLOR|LR_LOADFROMFILE
+               );
+    hIconSM = LoadImage(
+               hwnd,
+               "icon.ico",
+               IMAGE_ICON,
+               GetSystemMetrics(SM_CXSMICON),
+               GetSystemMetrics(SM_CYSMICON),
+               LR_DEFAULTCOLOR|LR_LOADFROMFILE
+               );
+
+
+    /* The Window structure */
+    wincl.hInstance = hwnd;
+    wincl.lpszClassName = szClassName2;
+    wincl.lpfnWndProc = WindowProcedure2;      /* This function is called by windows */
+    wincl.style = CS_DBLCLKS;                 /* Catch double-clicks */
+    wincl.cbSize = sizeof (WNDCLASSEX);
+
+    /* Use default icon and mouse-pointer */
+    wincl.hIcon = hIcon;
+    wincl.hIconSm = hIconSM;
+    wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
+    wincl.lpszMenuName = NULL;                 /* No menu */
+    wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
+    wincl.cbWndExtra = 0;                      /* structure or the window instance */
+    /* Use Windows's default colour as the background of the window */
+    wincl.hbrBackground =  (HBRUSH)GetStockObject(WHITE_BRUSH);
+
+    /* Register the window class, and if it fails quit the program */
+    if (!RegisterClassEx (&wincl)){}
+    HWND about = CreateWindowEx( WS_EX_TOPMOST,
+					szClassName2,
+					"Infos sur la case",
+					WS_OVERLAPPEDWINDOW ,
+					CW_USEDEFAULT, CW_USEDEFAULT,// not yet set correctly
+					250, 120,// just testing until I get the correct window
+					hwnd, NULL,
+					hwnd, NULL );
+
+		ShowWindow( about, SW_SHOW );
 
 }
 
@@ -165,6 +298,9 @@ int grilleGenDebug(){
         grille[i]=i;
     }
     updateGrille(grille);
+    for(i=0;i<81;i++){
+        grille[i]=0;
+    }
 }
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
@@ -269,7 +405,7 @@ void viderSudoku(){
 void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
     UINT iId=LOWORD(wParam);
     HWND hCtl=(HWND)lParam;
-
+    char lpch[2];
     switch (iId){
         case SOLVE_BUTTON:
             // Demander à la fonction de résoudre le sudoku
@@ -289,10 +425,20 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             // Demander à la fonction de vider la grille
             viderSudoku();
             break;
+        case OK_BUTTON:
+            Edit_GetText(hwndCtl,lpch,2);
+            printf("Numero %s a stocker dans la case %d\n",lpch,dernierecasecliquee-10);
+            if((lpch[0]-48)>0 && (lpch[0]-48)<=10){
+                printf("Enregistrable\n");
+                grille[dernierecasecliquee-10]=lpch[0]-48;
+                updateGrille(grille);
+            }
+            DestroyWindow(hwnd);
+            break;
         default:
             printf("Appui du bouton %d\n",iId);
             if(iId>=10 && iId<=90){ // Cas d'une case du Sudoku
-
+                creerWindowsCase(hwnd, message, wParam, lParam);
             }
             break;
     }
@@ -318,5 +464,24 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             return DefWindowProc (hwnd, message, wParam, lParam);
     }
 
+    return 0;
+}
+LRESULT CALLBACK WindowProcedure2 (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)                  /* handle the messages */
+    {
+        case WM_CREATE:
+            printf("Fenetre case generee\n");
+            FillWindowsCase(hwnd);         /* On remplit la fenêtre */
+            break;
+        case WM_COMMAND:
+            gererActions(hwnd, message, wParam, lParam); /* Dès qu'un bouton est appuyé, on appelle cette fonction */
+            break;
+        case WM_DESTROY:
+            printf("Case fermee\n");
+            break;
+        default:                      /* for messages that we don't deal with */
+            return DefWindowProc (hwnd, message, wParam, lParam);
+    }
     return 0;
 }

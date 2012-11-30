@@ -3,6 +3,8 @@
 #include <time.h>
 #include "sudoku.h"
 
+
+
 void resoudre(int* grille,int* solution){
 
 }
@@ -54,7 +56,7 @@ void generer(int* grille){
     grille[79]=4;
     grille[80]=6;
 
-    verifValidite(1,grille);
+
     updateGrille(grille);
 }
 
