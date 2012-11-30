@@ -41,7 +41,7 @@ void FillWindowsCase(HWND windowsInstance){
     tmp[1]='\0';
 
 
-    char possib[31]={0};
+    char possib[70]={0};
     strcat(possib,"Possibilités : ");
     int * possibilitesTab;
     possibilitesTab = verifValidite(dernierecasecliquee-10,grille);
