@@ -1,17 +1,20 @@
 #include <windows.h>
 #include <stdio.h>
 #include "sudoku.h"
+#include <commctrl.h>
 
 #define SOLVE_BUTTON 1
 #define GEN_BUTTON 2
 #define EMPTY_BUTTON 3
 #define DEBUG_BUTTON 4
+#define OK_BUTTON 5
 
 // Toutes les ressources sont ici : http://msdn.microsoft.com/en-us/library/windows/desktop/ms632586%28v=vs.85%29.aspx
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 void gererActions(HWND, UINT, WPARAM, LPARAM);
+void FillWindowsCase(HWND);
 void FillWindows(HWND);
 
 /* Quelques variables globales */
@@ -19,6 +22,14 @@ char szClassName[ ] = "SudokuSolver";
 HINSTANCE globHInstance;
 HWND hwndButtonSudoku[81];
 int grille[81];
+
+void FillWindowsCase(HWND windowsInstance){
+
+
+}
+void creerWindowsCase(){
+
+}
 
 void FillWindows(HWND windowsInstance){
     HWND hwndButtonRes = CreateWindow(
@@ -34,10 +45,11 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+    SendMessage(hwndButtonRes, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
     HWND hwndButtonGen = CreateWindow(
                 "BUTTON",  // Predefined class; Unicode assumed
                 "Générer",      // Button text
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
                 120,         // x position
                 10,         // y position
                 100,        // Button width
@@ -47,10 +59,11 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+    SendMessage(hwndButtonGen, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
     HWND hwndButtonClear = CreateWindow(
                 "BUTTON",  // Predefined class; Unicode assumed
                 "Vider",      // Button text
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
                 230,         // x position
                 10,         // y position
                 100,        // Button width
@@ -60,10 +73,11 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+    SendMessage(hwndButtonClear, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
     HWND hwndButtonDebug = CreateWindow(
                 "BUTTON",  // Predefined class; Unicode assumed
                 "Debug",      // Button text
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
                 10,         // x position
                 40,         // y position
                 100,        // Button width
@@ -73,7 +87,8 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
-    HWND hwndCredits = CreateWindow(
+    SendMessage(hwndButtonDebug, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+    /*HWND hwndCredits = CreateWindow(
                 "STATIC",
                 "NF05 - Projet de Louis et Benjamin",
                 SS_SIMPLE | WS_VISIBLE | WS_CHILD,
@@ -86,6 +101,8 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+    SendMessage(hwndCredits, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);*/
+
 
     //HWND hwndButtonSudoku[81]={NULL};
 
@@ -109,7 +126,7 @@ void FillWindows(HWND windowsInstance){
         hwndButtonSudoku[i] = CreateWindow(
                 "BUTTON",  // Predefined class; Unicode assumed
                 (LPCTSTR) &(nomBtn[i]),      // Button text
-                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
                 20+35*(i%9)+j,         // x position
                 100+35*(i/9)+k,         // y position
                 30,        // Button width
@@ -119,6 +136,8 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
+        SendMessage(hwndButtonSudoku[i], WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
     }
 }
 
@@ -153,6 +172,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                      LPSTR lpszArgument,
                      int nCmdShow)
 {
+
+    InitCommonControls();
+
     HWND hwnd;               /* This is the handle for our window */
     MSG messages;            /* Here messages to the application are saved */
     WNDCLASSEX wincl;        /* Data structure for the windowclass */
@@ -215,6 +237,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
+    SendMessage(hwnd, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nCmdShow);
 
@@ -267,6 +291,9 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             break;
         default:
             printf("Appui du bouton %d\n",iId);
+            if(iId>=10 && iId<=90){ // Cas d'une case du Sudoku
+
+            }
             break;
     }
 }
