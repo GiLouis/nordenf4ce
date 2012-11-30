@@ -13,15 +13,46 @@ void generer(int* grille){
         //grille[i]=(i+1)%3;
 
     }
-    grille[0]=1;
-    grille[1]=0;
-    grille[2]=3;
-    grille[9]=4;
-    grille[10]=5;
-    grille[11]=6;
-    grille[18]=7;
-    grille[19]=8;
-    grille[20]=9;
+
+    // SUDOKU 20MINUTES
+    grille[0]=6;
+    grille[1]=5;
+    grille[6]=2;
+    grille[9]=1;
+    grille[10]=8;
+    grille[11]=9;
+    grille[14]=2;
+    grille[16]=3;
+    grille[21]=5;
+    grille[22]=8;
+    grille[24]=1;
+    grille[25]=6;
+    grille[26]=9;
+    grille[27]=8;
+    grille[30]=7;
+    grille[31]=9;
+    grille[33]=6;
+    grille[36]=7;
+    grille[39]=4;
+    grille[41]=8;
+    grille[44]=3;
+    grille[47]=5;
+    grille[49]=6;
+    grille[50]=3;
+    grille[53]=2;
+    grille[54]=4;
+    grille[55]=6;
+    grille[56]=7;
+    grille[58]=5;
+    grille[59]=9;
+    grille[64]=3;
+    grille[66]=8;
+    grille[69]=9;
+    grille[70]=5;
+    grille[71]=7;
+    grille[74]=8;
+    grille[79]=4;
+    grille[80]=6;
 
     verifValidite(1,grille);
     updateGrille(grille);
