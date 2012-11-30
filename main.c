@@ -429,8 +429,12 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             Edit_GetText(hwndCtl,lpch,2);
             printf("Numero %s a stocker dans la case %d\n",lpch,dernierecasecliquee-10);
             if((lpch[0]-48)>0 && (lpch[0]-48)<=10){
-                printf("Enregistrable\n");
+                printf("Enregistre\n");
                 grille[dernierecasecliquee-10]=lpch[0]-48;
+                updateGrille(grille);
+            }else if((lpch[0]-48)==0){
+                printf("Supprime\n");
+                grille[dernierecasecliquee-10]=0;
                 updateGrille(grille);
             }
             DestroyWindow(hwnd);
