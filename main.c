@@ -5,6 +5,7 @@
 #define SOLVE_BUTTON 1
 #define GEN_BUTTON 2
 #define EMPTY_BUTTON 3
+#define DEBUG_BUTTON 4
 
 // Toutes les ressources sont ici : http://msdn.microsoft.com/en-us/library/windows/desktop/ms632586%28v=vs.85%29.aspx
 
@@ -59,7 +60,19 @@ void FillWindows(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
-
+    HWND hwndButtonDebug = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Debug",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,  // Styles
+                10,         // x position
+                40,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)DEBUG_BUTTON,
+                globHInstance,
+                NULL
+                );
     HWND hwndCredits = CreateWindow(
                 "STATIC",
                 "NF05 - Projet de Louis et Benjamin",
@@ -119,6 +132,14 @@ int updateGrille(int* grille){
         SetWindowText(hwndButtonSudoku[i],tmp);
     }
     printf("Grille mise a jour\n");
+}
+
+int grilleGenDebug(){
+    int i=0;
+    for(i=0;i<81;i++){
+        grille[i]=i;
+    }
+    updateGrille(grille);
 }
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
@@ -228,6 +249,11 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton generer\n");
             generer(grille);
+            break;
+        case DEBUG_BUTTON:
+            // Demander à la fonction de générer un sudoku
+            printf("Appui du bouton debug\n");
+            grilleGenDebug();
             break;
         case EMPTY_BUTTON:
             // Demander à la fonction de vider la grille
