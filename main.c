@@ -127,7 +127,13 @@ int updateGrille(int* grille){
     char tmp[3];
     for(i=0;i<81;i++){
         tmp[0]=grille[i]/10+48;
+        if(tmp[0]==48){
+            tmp[0]=' ';
+        }
         tmp[1]=grille[i]%10+48; // ligne utile en mode debug pour afficher le numero de la case
+        if(tmp[1]==48 && tmp[0]==' '){
+            tmp[1]=' ';
+        }
         tmp[2]='\0';
         SetWindowText(hwndButtonSudoku[i],tmp);
     }
