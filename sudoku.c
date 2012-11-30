@@ -32,9 +32,35 @@ Fonction retournant une liste de toutes les valeurs possibles de la case
 en faisant appel aux fonctions ci-dessous
 */
 int* verifValidite(int pos, int* grille){
-    valide3x3(pos,grille);
-    valide9x1(pos,grille);
-    valide1x9(pos,grille);
+    int* possibilites[3];
+    possibilites[0] = valide3x3(pos,grille);
+    possibilites[1] = valide9x1(pos,grille);
+    possibilites[2] = valide1x9(pos,grille);
+
+    int* possibilites_fin;
+    possibilites_fin = malloc(sizeof(int)*9);
+
+    int i=0;
+    int j=0;
+
+    for(i=0;i<9;i++){
+        possibilites_fin[i]=1;
+    }
+
+    for(i=0;i<3;i++){
+        for(j=0;j<9;j++){
+            if(possibilites[i][j]==0){
+                possibilites_fin[j]=0;
+            }
+        }
+        free(possibilites[i]);
+    }
+
+    printf("POSSIBILITES FIN :\n");
+    for(i=0;i<9;i++){
+        printf("->%d = %d \n",i+1,possibilites_fin[i]);
+    }
+    return possibilites_fin;
 }
 /*
 Fonction retournant les valeurs possibles de la case en fonction du carré
