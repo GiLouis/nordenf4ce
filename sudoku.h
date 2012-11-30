@@ -1,2 +1,2 @@
-void resoudre(int*,int*){
-void generer(int*){
+void resoudre(int*,int*);
+void generer(int*);
