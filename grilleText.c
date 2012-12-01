@@ -176,3 +176,30 @@ void genererNearWorstCaseInv (int* grille) {
     return grille;
 
 }
+void genererStarBurstLeo (int* grille) {
+
+    printf("Generation Star Burst Leo");
+
+    grille[0]=9;
+    grille[3]=1;
+    grille[5]=4;
+    grille[8]=2;
+    grille[10]=8;
+    grille[13]=6;
+    grille[16]=7;
+    grille[27]=4;
+    grille[35]=1;
+    grille[37]=7;
+    grille[43]=3;
+    grille[45]=3;
+    grille[53]=7;
+    grille[64]=3;
+    grille[67]=7;
+    grille[70]=8;
+    grille[72]=1;
+    grille[75]=2;
+    grille[77]=9;
+    grille[80]=4;
+
+    return grille;
+}

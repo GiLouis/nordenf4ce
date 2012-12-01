@@ -9,10 +9,10 @@ void generer(int* grille){
 
     //genererEaster(grille); // Bruteforce -> 0.01sec
     //generer20Min(grille); // Bruteforce ->0.014sec
-    genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
+    //genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
     //genererNearWorstCaseInv(grille); // Bruteforce -> 0.1sec
     //genererNearWorstCase (grille);
-
+    genererStarBurstLeo(grille); //Bruteforce->2sec
     updateGrille(grille);
 }
 
