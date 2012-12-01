@@ -79,6 +79,7 @@ void genererTwoLigne(int* grille){ // Générateur non parfait : il peut y avoir u
     printf("Generation en cours\n");
     int i=0;
     int j=0;
+    int v=0;
     int retry=0;
     int nbaleat=0;
     int presence[9]={0};
@@ -109,6 +110,14 @@ void genererTwoLigne(int* grille){ // Générateur non parfait : il peut y avoir u
             for(j=0;j<9;j++){
                 if(nbaleat==presence[j]){
                     retry=1;
+                }
+            }
+        // On s'assure que il n'y a pas d'identique dans la premiere case
+         if(i<3) {
+               for(v=1;v<3;v++) {
+                    if(nbaleat==grille[v]){
+                        retry=1;
+                    }
                 }
             }
         }while(retry);
