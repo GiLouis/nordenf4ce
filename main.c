@@ -2,6 +2,8 @@
 #include <Windowsx.h>
 #include <stdio.h>
 #include "sudoku.h"
+#include "bruteforce.h"
+#include "grilleText.h"
 #include <commctrl.h>
 
 #define SOLVE_BUTTON 1
@@ -42,7 +44,7 @@ void FillWindowsCase(HWND windowsInstance){
 
 
     char possib[31]={0};
-    strcat(possib,"Possibilités : ");
+    strcat(possib,"Possibilites : ");
     int * possibilitesTab;
     possibilitesTab = verifValidite(dernierecasecliquee-10,grille);
     int i=0;
@@ -289,7 +291,7 @@ int updateGrille(int* grille){
         tmp[2]='\0';
         SetWindowText(hwndButtonSudoku[i],tmp);
     }
-    printf("Grille mise a jour\n");
+    //printf("Grille mise a jour\n");
 }
 
 int grilleGenDebug(){
@@ -309,7 +311,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                      int nCmdShow)
 {
 
-    InitCommonControls();
+//    InitCommonControls();
 
     HWND hwnd;               /* This is the handle for our window */
     MSG messages;            /* Here messages to the application are saved */
@@ -392,9 +394,10 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 }
 
 
-void viderSudoku(){
+void viderSudoku(int *grille){
     int i=0;
     for(i=0;i<81;i++){
+        grille[i] = 0;
         SetWindowText(hwndButtonSudoku[i]," ");
     }
     printf("Grille videe\n");
@@ -410,6 +413,7 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
         case SOLVE_BUTTON:
             // Demander à la fonction de résoudre le sudoku
             printf("Appui du bouton resoudre\n");
+            resoudreBruteForce(grille);
             break;
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
@@ -423,7 +427,7 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             break;
         case EMPTY_BUTTON:
             // Demander à la fonction de vider la grille
-            viderSudoku();
+            viderSudoku(grille);
             break;
         case OK_BUTTON:
             Edit_GetText(hwndCtl,lpch,2);
