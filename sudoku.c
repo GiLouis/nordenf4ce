@@ -8,9 +8,9 @@
 void generer(int* grille){
 
 
-   // generer20Min(grille);
-   // generer20Min(grille);
-    genererTwoLigne(grille);
+   // genererEaster(grille);
+     generer20Min(grille);
+   // genererTwoLigne(grille);
     updateGrille(grille);
 }
 

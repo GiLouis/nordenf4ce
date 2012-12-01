@@ -4,49 +4,7 @@
 #include "bruteforce.h"
 #include <conio.h>
 
-void genererSudoku(int* grille){ //cette fonction est inutile, non?
-    printf("Generation en cours\n");
-    int i=0;
-    int j=0;
-    int retry=0;
-    int nbaleat=0;
-    int presence[9]={0};
-    grille[0]=rand()%9+1;
-    presence[0]=grille[0];
-    for(i=1;i<9;i++){
-        do{
-            retry=0;
-            nbaleat=rand()%9+1;
-            j=0;
-            for(j=0;j<9;j++){
-                if(nbaleat==presence[j]){
-                    retry=1;
-                }
-            }
-        }while(retry);
-        grille[i]=nbaleat;
-        presence[i]=grille[i];
-    }
-    for(i=1;i<9;i++){
-        presence[i]=0;
-    }
-    for(i=1;i<9;i++){
-        do{
-            retry=0;
-            nbaleat=rand()%9+1;
-            j=0;
-            for(j=0;j<9;j++){
-                if(nbaleat==presence[j]){
-                    retry=1;
-                }
-            }
-        }while(retry);
-        grille[i*9]=nbaleat;
-        presence[i]=nbaleat;
-    }
 
-    updateGrille(grille);
-}
 
 
 int avancerDunCaseVide(int pos, int *grilleFixe){
@@ -57,7 +15,7 @@ int avancerDunCaseVide(int pos, int *grilleFixe){
     return pos;
 }
 int reculerDunCaseVide(int pos, int *grilleFixe){
-    if( pos > 2) {
+    if( pos > 2) { // Le probleme est-il causé par ca?
         pos =  pos - 1;
         while (grilleFixe[pos] == 1 && pos>1) {
             pos = pos - 1;
@@ -140,6 +98,7 @@ void resoudreBruteForce (int *grille) { //int *solution?
 
 
         }
+        updateGrille(grille);
         if (valeurPossible == 0){
             grille[pos] = NULL;
             pos = reculerDunCaseVide(pos, grilleFixe);
@@ -150,7 +109,7 @@ void resoudreBruteForce (int *grille) { //int *solution?
 
         //printf("_________ pos = %d \n", pos);
     }
-    updateGrille(grille);
+
 
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
