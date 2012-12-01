@@ -127,3 +127,52 @@ void genererTwoLigne(int* grille){ // Générateur non parfait : il peut y avoir u
 
     return grille;
 }
+void genererNearWorstCase (int* grille) {
+    printf("generation near worst case for Bruteforce\n");
+
+    grille[14]=3;
+    grille[16]=8;
+    grille[17]=5;
+    grille[20]=1;
+    grille[22]=2;
+    grille[30]=5;
+    grille[32]=7;
+    grille[38]=4;
+    grille[42]=1;
+    grille[46]=9;
+    grille[54]=5;
+    grille[61]=7;
+    grille[62]=3;
+    grille[65]=2;
+    grille[67]=1;
+    grille[76]=4;
+    grille[80]=9;
+
+
+}
+void genererNearWorstCaseInv (int* grille) {
+
+
+    printf("generation near worst case for Bruteforce INVERSE\n");
+
+    grille[14]=7;
+    grille[16]=2;
+    grille[17]=5;
+    grille[20]=9;
+    grille[22]=8;
+    grille[30]=5;
+    grille[32]=3;
+    grille[38]=6;
+    grille[42]=9;
+    grille[46]=1;
+    grille[54]=5;
+    grille[61]=3;
+    grille[62]=7;
+    grille[65]=8;
+    grille[67]=9;
+    grille[76]=6;
+    grille[80]=1;
+
+    return grille;
+
+}

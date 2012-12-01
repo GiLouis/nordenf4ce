@@ -9,18 +9,18 @@
 
 int avancerDunCaseVide(int pos, int *grilleFixe){
     pos = pos + 1;
-    while (grilleFixe[pos] == 1 && pos != 80) {
+    while (grilleFixe[pos] == 1 && pos != 81) {
         pos = pos + 1;
     }
+    if (pos == 81) { printf("sortie du grille");}
     return pos;
 }
 int reculerDunCaseVide(int pos, int *grilleFixe){
-    if( pos > 2) { // Le probleme est-il causé par ca?
+    if( pos > 1) { // Le probleme est-il causé par ca?
         pos =  pos - 1;
         while (grilleFixe[pos] == 1 && pos>1) {
             pos = pos - 1;
         }
-
     }
     return pos;
 }
@@ -53,7 +53,7 @@ void resoudreBruteForce (int *grille) { //int *solution?
     fixerGrille(grille, grilleFixe);
     int pos = 0;
     int i;
-   /* for(i=0;i<81;i++) {
+    /*for(i=0;i<81;i++) {
         printf("%d ",grilleFixe[i]);
         if((i+1)%3==0){printf("|");}
         if((i+1)%9==0){printf("\n");}
@@ -66,27 +66,17 @@ void resoudreBruteForce (int *grille) { //int *solution?
     }
     //printf("\n || pos = %d || \n", pos);
     // Quels sont les validités de la case
-    int * possibilitesTab;
-    possibilitesTab = verifValidite(pos,grille);
-    for(i=0;i<9;i++){
-    // On va mettre un nombre parmis les différentes possibilités.
-        if(possibilitesTab[i] == 1){//&& i>grille[pos]
-            grille[pos] = i+1;
-        }
-        updateGrille(grille);
-    }
 
-    int v;
+    int * possibilitesTab;
     int valeurPossible;
-    pos = avancerDunCaseVide(pos, grilleFixe);
+
     while(pos<81) {
         // assigne la premiere option
         valeurPossible = 0;
         possibilitesTab = verifValidite(pos,grille);
-        v = grille[pos];
-        if (v == NULL || v<0) { v = -1; }
-        i = v;
-
+        i = grille[pos]; // attention assignation
+        if (i == NULL) { i = 0; } // || v<0
+        i--;
         while(valeurPossible == 0 && i<8) {
             i++;
             //printf("posTab(%d) = %d \n",i, possibilitesTab[i]);
@@ -98,18 +88,18 @@ void resoudreBruteForce (int *grille) { //int *solution?
 
 
         }
-        updateGrille(grille);
+
         if (valeurPossible == 0){
             grille[pos] = NULL;
             pos = reculerDunCaseVide(pos, grilleFixe);
         }
         else {
+
             pos = avancerDunCaseVide(pos, grilleFixe);
         }
 
-        //printf("_________ pos = %d \n", pos);
     }
-
+    updateGrille(grille);
 
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
