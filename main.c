@@ -31,23 +31,24 @@ UINT dernierecasecliquee;
 HINSTANCE globHInstance;
 HWND hwndButtonSudoku[81];
 HWND hwndCtl;
-char grille[81];
+char grille[81]={0};
 
 void FillWindowsCase(HWND windowsInstance){
 
     char* test = valideGrille(grille);
-    //trierCroissantPossib(test);
+    int tailleGrilleTri=0;
+    supprCRempliesDuTri(trierCroissantPossib(test,0),&tailleGrilleTri,grille);
 
-    /*char tmp[2]={0};
+
+    char tmp[2]={0};
     tmp[0]=grille[dernierecasecliquee-10]+48;
-    printf("----------------%d %c\n",dernierecasecliquee,tmp[0]);
+    //printf("----------------%d %c\n",dernierecasecliquee,tmp[0]);
     if(tmp[0]==48){
         tmp[0]='\0';
     }
     tmp[1]='\0';
 
-
-    char possib[70]={0};
+    char possib[80]={0};
 
     int i=0;
     char tmp2[2];
@@ -72,7 +73,7 @@ void FillWindowsCase(HWND windowsInstance){
             strcat(possib,tmp2);
             premiereVirgule=1;
         }
-        printf("%d = %d\n",i,possibilitesTab[i]);
+        //printf("%d = %d\n",i,possibilitesTab[i]);
     }
     printf("%s !\n",possib);
     free(possibilitesTab);
@@ -120,7 +121,7 @@ void FillWindowsCase(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
-    SendMessage(hwndButtonCaseOk, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);*/
+    SendMessage(hwndButtonCaseOk, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
 
 }
 void creerWindowsCase(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
@@ -167,9 +168,18 @@ void creerWindowsCase(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
 
     /* Register the window class, and if it fails quit the program */
     if (!RegisterClassEx (&wincl)){}
+    char aboutStr[70]={'\0'};
+    char tmp[3]={'\0'};
+    strcat(aboutStr,"Infos sur la case ");
+
+    tmp[0]=((dernierecasecliquee-10)/10+48);
+    tmp[1]=((dernierecasecliquee-10)%10+48);
+
+    strcat(aboutStr,tmp);
+
     HWND about = CreateWindowEx( WS_EX_TOPMOST,
 					szClassName2,
-					"Infos sur la case",
+					aboutStr,
 					WS_OVERLAPPEDWINDOW ,
 					CW_USEDEFAULT, CW_USEDEFAULT,// not yet set correctly
 					250, 120,// just testing until I get the correct window
@@ -391,7 +401,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 }
 
 
-void viderSudoku(int *grille){
+void viderSudoku(char *grille){
     int i=0;
     for(i=0;i<81;i++){
         grille[i] = 0;
