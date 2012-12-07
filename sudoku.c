@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 #include "sudoku.h"
 
+typedef struct paramsThreadVerifValidite{
+    char pos;
+    char* grille;
+    char* debutTabPossib;
+};
 
-
-void generer(int* grille){
+void generer(char* grille){
 
     //genererEaster(grille); // Bruteforce -> 0.01sec
     //generer20Min(grille); // Bruteforce ->0.014sec
@@ -16,146 +21,197 @@ void generer(int* grille){
     updateGrille(grille);
 }
 
+/*
+Fonction renvoyant un tableau avec toutes les possibilites et leur compte des cases de la grille
+*/
+char* valideGrille(char* grille){
+    int i = 0;
+    HANDLE caseThread[81];
+    paramsThreadVerifValidite var[81];
 
-void resoudre(int* grille,int* solution){
+    char* tabPossibilites = malloc(81*(10*sizeof(char)));
 
+    for(i=0;i<81;i++){
+        var[i].pos=i;
+        var[i].grille=grille;
+        var[i].debutTabPossib = &(tabPossibilites[i*10]);
+        printf("%d %x | %x\n",i,var[i].debutTabPossib,&(var[i]));
+        // ATTENTION DEBUG : EN PASSANT PAR LES THREAD, CELA NE MARCHE PAS... Mutex à faire ? Car la fonction appelée n'a pas les mêmes variables...
+
+
+
+        caseThread[i] = CreateThread(NULL,0,verifValidite,&(var[i]),0,NULL);
+        /*if(i%4==0){
+            WaitForMultipleObjects(5,&(caseThread[5*i]),TRUE,INFINITE);
+        }*/
+
+    }
+
+    WaitForMultipleObjects(81,caseThread,TRUE,INFINITE);
+
+    return tabPossibilites;
 }
 /*
-Fonction retournant une liste de toutes les valeurs possibles de la case
-en faisant appel aux fonctions ci-dessous
+Fonction renvoyant un tableau avec toutes les possibilites et leur compte d'une des case de la grille
 */
-int* verifValidite(int pos, int* grille){
-    int* possibilites[3];
-    possibilites[0] = valide3x3(pos,grille);
-    possibilites[1] = valide9x1(pos,grille);
-    possibilites[2] = valide1x9(pos,grille);
+char* valideUnecase(char pos,char* grille){
+    HANDLE caseThread;
+    char* tabPossibilites = malloc((10*sizeof(char)));
 
-    int* possibilites_fin;
-    possibilites_fin = malloc(sizeof(int)*9);
+    paramsThreadVerifValidite var;
+    var.grille=grille;
+    var.pos=pos;
+    var.debutTabPossib = tabPossibilites;
+
+    verifValidite(&var);
+
+    return tabPossibilites;
+}
+
+char* trierCroissantPossib(char* tabPossibilites){
+    int i = 0;
+    int j = 0;
+    char min=tabPossibilites[0];
+    char minprec=0;
+    char minpos=0;
+    char* tabPossibOrdonne = malloc(81*sizeof(char));
+    for(i=0;i<81;i++){
+        /*min=tabPossibilites[i*10];
+        minpos=i;
+        for(j=0;j<81;j++){
+            if(tabPossibilites[j*10]<tabPossibilites[i*10] && tabPossibilites[j*10]>minprec && j!=i){
+                min=tabPossibilites[j*10];
+                minpos=j;
+            }
+        }
+        tabPossibOrdonne[j]=i;
+        minprec=tabPossibilites[j*10];*/
+        printf("%d/ ",i);
+        for(j=0;j<10;j++){
+            printf("-%d",tabPossibilites[i*10+j]);
+        }
+        printf("\n");
+    }
+
+    /*for(i=0;i<81;i++){
+        printf("%d/ case %d avec possibilites\n",i,tabPossibOrdonne[i*9]);
+    }*/
+    return tabPossibOrdonne;
+}
+
+// NE PAS UTILISER DIRECTEMENT LES FONCTIONS CI-DESSOUS
+
+void verifValidite(paramsThreadVerifValidite* param){
+    HANDLE possibThread[3];
+    paramsThreadVerifValidite paramCase[3];
+    char* possibilites;
+    possibilites = malloc(3*9*sizeof(char));
+
+    printf("--%x | %x\n",param->debutTabPossib,param);
+
+    paramCase[0].grille=param->grille;
+    paramCase[0].pos=param->pos;
+    paramCase[0].debutTabPossib=&(possibilites[0]);
+    possibThread[0] = CreateThread(NULL,0,valide3x3,&(paramCase[0]),0,NULL);
+
+    paramCase[1].grille=param->grille;
+    paramCase[1].pos=param->pos;
+    paramCase[1].debutTabPossib=&(possibilites[9]);
+    possibThread[1] = CreateThread(NULL,0,valide9x1,&(paramCase[1]),0,NULL);
+
+    paramCase[2].grille=param->grille;
+    paramCase[2].pos=param->pos;
+    paramCase[2].debutTabPossib=&(possibilites[18]);
+    possibThread[2] = CreateThread(NULL,0,valide1x9,&(paramCase[2]),0,NULL);
+
+    WaitForMultipleObjects(3,possibThread,TRUE,INFINITE);
 
     int i=0;
     int j=0;
-
-    for(i=0;i<9;i++){
-        possibilites_fin[i]=1;
+    for(i=1;i<10;i++){
+        param->debutTabPossib[i]=1;
     }
-
-    for(i=0;i<3;i++){
-        for(j=0;j<9;j++){
-            if(possibilites[i][j]==0){
-                possibilites_fin[j]=0;
-            }
+    (param->debutTabPossib)[0]=0;
+    for(j=1;j<10;j++){
+        if(possibilites[j-1]==0 || possibilites[j+9-1]==0 || possibilites[j+18-1]==0){
+            (param->debutTabPossib)[j]=0;
+        }else{
+            (param->debutTabPossib)[0]+=1;
         }
-        free(possibilites[i]);
     }
+    free(possibilites);
 
- /*   printf("POSSIBILITES FIN :\n");
-    for(i=0;i<9;i++){
-        printf("->%d = %d \n",i+1,possibilites_fin[i]);
-    } */
-    return possibilites_fin;
 }
-/*
-Fonction retournant les valeurs possibles de la case en fonction du carré
-*/
-int* valide3x3(int pos, int* grille){
+
+void valide3x3(paramsThreadVerifValidite* param){
     int i=0;
     int ligneGroupe=0;
     int colonneGroupe=0;
-    ligneGroupe=pos/27;
-    colonneGroupe=(pos%9)/3;
+    ligneGroupe=param->pos/27;
+    colonneGroupe=(param->pos%9)/3;
     int procCase=0;
-    int *possibilites;
-    possibilites=malloc(sizeof(int)*9);
+
     for(i=0;i<9;i++){
-        possibilites[i]=1;
+        param->debutTabPossib[i]=1;
     }
 
     for(i=0;i<9;i++){
         procCase=ligneGroupe*27+colonneGroupe*3+i%3+(i/3)*9;
-        //printf("%d - %d \n",procCase,grille[procCase]);
-        if(pos!=procCase){
-            if(possibilites[grille[procCase]-1]!=0){
-                possibilites[grille[procCase]-1]=0;
-            }else if(grille[procCase]!=0){
-                printf("Erreur : le 3x3 contient deux fois le même nombre : %d\n",grille[procCase]);
+        if(param->pos!=procCase){
+            if(param->debutTabPossib[param->grille[procCase]-1]!=0){
+                param->debutTabPossib[param->grille[procCase]-1]=0;
+            }else if(param->grille[procCase]!=0){
+                printf("Erreur : le 3x3 contient deux fois le même nombre : %d\n",param->grille[procCase]);
                 break;
             }
         }
     }
-
-   /* printf("POSSIBILITES :\n");
-    for(i=0;i<9;i++){
-        printf("|%d = %d |\n",i+1,possibilites[i]);
-    } */
-    return possibilites;
-
 }
-/*
-Fonction retournant les valeurs possibles de la case en fonction de la ligne
-*/
-int* valide9x1(int pos, int* grille){
+
+
+void valide9x1(paramsThreadVerifValidite* param){
     int i=0;
     int ligneGroupe=0;
-    ligneGroupe=pos/9;
+    ligneGroupe=param->pos/9;
     int procCase=0;
-    int *possibilites;
-    possibilites=malloc(sizeof(int)*9);
+
     for(i=0;i<9;i++){
-        possibilites[i]=1;
+        param->debutTabPossib[i]=1;
     }
 
     for(i=0;i<9;i++){
         procCase=ligneGroupe*9+i;
-        //printf("%d - %d \n",procCase,grille[procCase]);
-        if(pos!=procCase){
-            if(possibilites[grille[procCase]-1]!=0){
-                possibilites[grille[procCase]-1]=0;
-            }else if(grille[procCase]!=0){
-                printf("Erreur : le 3x3 contient deux fois le même nombre : %d\n",grille[procCase]);
+        if(param->pos!=procCase){
+            if(param->debutTabPossib[param->grille[procCase]-1]!=0){
+                param->debutTabPossib[param->grille[procCase]-1]=0;
+            }else if(param->grille[procCase]!=0){
+                printf("Erreur : le 9x1 contient deux fois le même nombre : %d\n",param->grille[procCase]);
                 break;
             }
         }
     }
-
-   /* printf("POSSIBILITES :\n");
-    for(i=0;i<9;i++){
-        printf("|%d = %d |\n",i+1,possibilites[i]);
-    }*/
-    return possibilites;
-
 }
-/*
-Fonction retournant les valeurs possibles de la case en fonction de la colonne
-*/
-int* valide1x9(int pos, int* grille){
+
+
+void valide1x9(paramsThreadVerifValidite* param){
     int i=0;
     int colonneGroupe=0;
-    colonneGroupe=pos%9;
+    colonneGroupe=param->pos%9;
     int procCase=0;
-    int *possibilites;
-    possibilites=malloc(sizeof(int)*9);
+
     for(i=0;i<9;i++){
-        possibilites[i]=1;
+        param->debutTabPossib[i]=1;
     }
 
     for(i=0;i<9;i++){
         procCase=colonneGroupe+i*9;
-        //printf("%d - %d \n",procCase,grille[procCase]);
-        if(pos!=procCase){
-            if(possibilites[grille[procCase]-1]!=0){
-                possibilites[grille[procCase]-1]=0;
-            }else if(grille[procCase]!=0){
-                printf("Erreur : le 3x3 contient deux fois le même nombre : %d\n",grille[procCase]);
+        if(param->pos!=procCase){
+            if(param->debutTabPossib[param->grille[procCase]-1]!=0){
+                param->debutTabPossib[param->grille[procCase]-1]=0;
+            }else if(param->grille[procCase]!=0){
+                printf("Erreur : le 1x9 contient deux fois le même nombre : %d\n",param->grille[procCase]);
                 break;
             }
         }
     }
-
-  /*  printf("POSSIBILITES :\n");
-    for(i=0;i<9;i++){
-        printf("|%d = %d |\n",i+1,possibilites[i]);
-    }*/
-    return possibilites;
-
 }

@@ -31,10 +31,14 @@ UINT dernierecasecliquee;
 HINSTANCE globHInstance;
 HWND hwndButtonSudoku[81];
 HWND hwndCtl;
-int grille[81];
+char grille[81];
 
 void FillWindowsCase(HWND windowsInstance){
-    char tmp[2]={0};
+
+    char* test = valideGrille(grille);
+    //trierCroissantPossib(test);
+
+    /*char tmp[2]={0};
     tmp[0]=grille[dernierecasecliquee-10]+48;
     printf("----------------%d %c\n",dernierecasecliquee,tmp[0]);
     if(tmp[0]==48){
@@ -44,24 +48,34 @@ void FillWindowsCase(HWND windowsInstance){
 
 
     char possib[70]={0};
-    strcat(possib,"Possibilités : ");
-    int * possibilitesTab;
-    possibilitesTab = verifValidite(dernierecasecliquee-10,grille);
+
     int i=0;
     char tmp2[2];
+
+    char * possibilitesTab;
+    possibilitesTab = valideUnecase(dernierecasecliquee-10,grille);
+
+    tmp2[0]=(char)possibilitesTab[0]+48;
+    tmp2[1]='\0';
+
+    strcat(possib,tmp2);
+    strcat(possib," possibilité(s) : ");
+
     int premiereVirgule=0;
-    for(i=0;i<9;i++){
+    for(i=1;i<10;i++){
         if(possibilitesTab[i]==1){
             if(premiereVirgule){
                 strcat(possib,", ");
             }
-            tmp2[0]=i+49;
+            tmp2[0]=i+48;
             tmp2[1]='\0';
             strcat(possib,tmp2);
             premiereVirgule=1;
         }
+        printf("%d = %d\n",i,possibilitesTab[i]);
     }
     printf("%s !\n",possib);
+    free(possibilitesTab);
 
     HWND hwndPossib = CreateWindow(
                 "STATIC",
@@ -106,7 +120,7 @@ void FillWindowsCase(HWND windowsInstance){
                 globHInstance,
                 NULL
                 );
-    SendMessage(hwndButtonCaseOk, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+    SendMessage(hwndButtonCaseOk, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);*/
 
 }
 void creerWindowsCase(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
@@ -223,23 +237,6 @@ void FillWindows(HWND windowsInstance){
                 NULL
                 );
     SendMessage(hwndButtonDebug, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
-    /*HWND hwndCredits = CreateWindow(
-                "STATIC",
-                "NF05 - Projet de Louis et Benjamin",
-                SS_SIMPLE | WS_VISIBLE | WS_CHILD,
-                140,
-                500,
-                250,
-                30,
-                windowsInstance,
-                NULL,
-                globHInstance,
-                NULL
-                );
-    SendMessage(hwndCredits, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);*/
-
-
-    //HWND hwndButtonSudoku[81]={NULL};
 
     int i=0;
     int j=0;
@@ -276,7 +273,7 @@ void FillWindows(HWND windowsInstance){
     }
 }
 
-int updateGrille(int* grille){
+int updateGrille(char* grille){
     int i=0;
     char tmp[3];
     for(i=0;i<81;i++){

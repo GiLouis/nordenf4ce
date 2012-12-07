@@ -3,7 +3,7 @@
 #include <time.h>
 #include "grilleText.h"
 
-void genererEaster(int* grille){
+void genererEaster(char* grille){
 
     // Easter Monster
     grille[0]=1;
@@ -30,7 +30,7 @@ void genererEaster(int* grille){
 
     return grille;
 }
-void generer20Min(int* grille){
+void generer20Min(char* grille){
 
     // SUDOKU 20MINUTES
     grille[0]=6;
@@ -74,7 +74,7 @@ void generer20Min(int* grille){
 
     return grille;
 }
-void genererTwoLigne(int* grille){ // Générateur non parfait : il peut y avoir un incidence sur le premier 3x3
+void genererTwoLigne(char* grille){ // Générateur non parfait : il peut y avoir un incidence sur le premier 3x3
 
     printf("Generation en cours\n");
     int i=0;
@@ -127,7 +127,7 @@ void genererTwoLigne(int* grille){ // Générateur non parfait : il peut y avoir u
 
     return grille;
 }
-void genererNearWorstCase (int* grille) {
+void genererNearWorstCase (char* grille) {
     printf("generation near worst case for Bruteforce\n");
 
     grille[14]=3;
@@ -150,7 +150,7 @@ void genererNearWorstCase (int* grille) {
 
 
 }
-void genererNearWorstCaseInv (int* grille) {
+void genererNearWorstCaseInv (char* grille) {
 
 
     printf("generation near worst case for Bruteforce INVERSE\n");
@@ -176,7 +176,7 @@ void genererNearWorstCaseInv (int* grille) {
     return grille;
 
 }
-void genererStarBurstLeo (int* grille) {
+void genererStarBurstLeo (char* grille) {
 
     printf("Generation Star Burst Leo");
 
