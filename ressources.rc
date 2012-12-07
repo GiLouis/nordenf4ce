@@ -1,7 +1,36 @@
 #ifndef RESOURCE_RC_INCLUDED
 #define RESOURCE_RC_INCLUDED
+#define VOS_NT_WINDOWS32    0x00040004L
+#define VFT_APP             0x00000001L
 
 MAINICON ICON "icon.ico"
+1 24 "manifest.xml"
+
+//include version information in .exe, modify these values to match your needs
+1 VERSIONINFO
+FILEVERSION 0,1,1,1
+PRODUCTVERSION 0,1,1,1
+FILETYPE VFT_APP
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        {
+            VALUE "CompanyName", "SuperGroupeNF05"
+            VALUE "FileVersion", "PreBeta"
+            VALUE "FileDescription", "Solveur de Sudoku"
+            VALUE "InternalName", "Nordenface: Générateur/Solveur de Sudoku"
+            VALUE "LegalCopyright", "2012"
+            VALUE "ProductName", "Nordenface"
+            VALUE "ProductVersion", "PreBeta"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252 //language codes
+    }
+}
+
 
 #endif // RESOURCE_RC_INCLUDED
 
