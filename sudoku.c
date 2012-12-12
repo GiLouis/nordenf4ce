@@ -16,8 +16,8 @@ void generer(char* grille){
     //generer20Min(grille); // Bruteforce ->0.014sec
     //genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
     //genererNearWorstCaseInv(grille); // Bruteforce -> 0.1sec
-    genererNearWorstCase (grille);
-    //genererStarBurstLeo(grille); //Bruteforce->2sec
+    //genererNearWorstCase (grille);
+    genererStarBurstLeo(grille); //Bruteforce->2sec
     updateGrille(grille);
 }
 
@@ -67,7 +67,7 @@ Fonction renvoyant un tableau avec toutes les possibilites et leur compte d'une 
 char* valideUnecase(char pos,char* grille){
     HANDLE caseThread;
     char* tabPossibilites = malloc((10*sizeof(char)));
-
+    //printf("Adresse : %x\n",tabPossibilites);
     paramsThreadVerifValidite var;
     var.grille=grille;
     var.pos=pos;
