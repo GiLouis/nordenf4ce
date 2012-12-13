@@ -3,6 +3,7 @@
 #include <time.h>
 #include <windows.h>
 #include "sudoku.h"
+#include <conio.h>
 
 typedef struct paramsThreadVerifValidite{
     char pos;
@@ -14,10 +15,14 @@ void generer(char* grille){
 
     //genererEaster(grille); // Bruteforce -> 0.01sec
     //generer20Min(grille); // Bruteforce ->0.014sec
-    //genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
     //genererNearWorstCaseInv(grille); // Bruteforce -> 0.1sec
-    //genererNearWorstCase (grille);
-    genererStarBurstLeo(grille); //Bruteforce->2sec
+    //genererNearWorstCase (grille); // Bruteforce --> 261 sec
+    //genererStarBurstLeo(grille); //Bruteforce->2sec
+
+
+    genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
+    resoudreBruteForce(grille);
+    enleverCases(grille);
     updateGrille(grille);
 }
 
@@ -50,9 +55,9 @@ char* valideGrille(char* grille){
         // ATTENTION DEBUG : EN PASSANT PAR LES THREAD, CELA NE MARCHE PAS... Mutex à faire ? Car la fonction appelée n'a pas les mêmes variables...
 
 
-
-        caseThread[i] = CreateThread(NULL,0,verifValidite,&(var[i]),0,NULL);
-        WaitForMultipleObjects(1,&(caseThread[i]),TRUE,INFINITE);
+        verifValidite(&var);
+        //caseThread[i] = CreateThread(NULL,0,verifValidite,&(var[i]),0,NULL);
+        //WaitForMultipleObjects(1,&(caseThread[i]),TRUE,INFINITE);
 
 
     }
@@ -132,6 +137,8 @@ char*  supprCRempliesDuTri(char* tabPossibOrdonne,int* tailleFin,char* grille){
 // NE PAS UTILISER DIRECTEMENT LES FONCTIONS CI-DESSOUS
 
 void verifValidite(paramsThreadVerifValidite* param){
+
+
     HANDLE possibThread[3];
     paramsThreadVerifValidite paramCase[3];
     char* possibilites;
@@ -140,23 +147,26 @@ void verifValidite(paramsThreadVerifValidite* param){
     paramCase[0].grille=param->grille;
     paramCase[0].pos=param->pos;
     paramCase[0].debutTabPossib=&(possibilites[0]);
-    possibThread[0] = CreateThread(NULL,0,valide3x3,&(paramCase[0]),0,NULL);
+    //possibThread[0] = CreateThread(NULL,0,valide3x3,&(paramCase[0]),0,NULL);
+    valide3x3(&paramCase[0]);
     //valide3x3(&(paramCase[0]));
 
     paramCase[1].grille=param->grille;
     paramCase[1].pos=param->pos;
     paramCase[1].debutTabPossib=&(possibilites[9]);
-    possibThread[1] = CreateThread(NULL,0,valide9x1,&(paramCase[1]),0,NULL);
+    //possibThread[1] = CreateThread(NULL,0,valide9x1,&(paramCase[1]),0,NULL);
+    valide9x1(&paramCase[1]);
     //valide1x9(&(paramCase[1]));
 
 
     paramCase[2].grille=param->grille;
     paramCase[2].pos=param->pos;
     paramCase[2].debutTabPossib=&(possibilites[18]);
-    possibThread[2] = CreateThread(NULL,0,valide1x9,&(paramCase[2]),0,NULL);
+    //possibThread[2] = CreateThread(NULL,0,valide1x9,&(paramCase[2]),0,NULL);
+    valide1x9(&paramCase[2]);
     //valide9x1(&(paramCase[2]));
 
-    WaitForMultipleObjects(3,possibThread,TRUE,INFINITE);
+    //WaitForMultipleObjects(3,possibThread,TRUE,INFINITE);
 
     int i=0;
     int j=0;

@@ -16,7 +16,7 @@ int avancerDunCaseVide(int pos, int *grilleFixe){
     return pos;
 }
 int reculerDunCaseVide(int pos, int *grilleFixe){
-    if( pos > 1) { // Le probleme est-il causé par ca?
+    if( pos > 0) { // Le probleme est-il causé par ca?
         pos =  pos - 1;
         while (grilleFixe[pos] == 1 && pos>1) {
             pos = pos - 1;
@@ -41,7 +41,7 @@ int* fixerGrille(char *grille, int *grilleFixe) {
     return grilleFixe;
 
 }
-void resoudreBruteForce(char *grille) {
+int resoudreBruteForce(char *grille) { // ajouter une condition de sortie si la case n1 a essayé de 1 à 9
     // On initiale les var usuelle
     int i;
     int pos = 0, iterations = 0;
@@ -98,6 +98,9 @@ void resoudreBruteForce(char *grille) {
         free(possibilitesTab);
 
         if(valeurPossible == 0) {
+            if(pos == 0) {
+                return 0;
+            }
             grille[pos] = (char)(NULL);
             pos = reculerDunCaseVide(pos, grilleFixe);
         }
@@ -105,16 +108,74 @@ void resoudreBruteForce(char *grille) {
             pos = avancerDunCaseVide(pos, grilleFixe);
         }
 
-
+        if(iterations%1000000 == 0) {
+         //   updateGrille(grille);
+        }
     }
-    updateGrille(grille);
-
+    //updateGrille(grille);
+    return 1;
     // On affiche le temps
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps = %f\n", temps);
+    printf("Iterations = %d",iterations);
 
     printf("tempsTvalSom = %f\n", tempsTvalSom); // On a une preuve que c'est le programme de Louis qui bouffe la ram :P
 }
+void enleverCases(char *grille) {
+    int i, nbrPossible, nbrRandom;
+    int succes;
+    for(i=0;i<50;i++) {
+    succes = 0;
+    printf("i = %d\n", i);
+        while(succes == 0) {
+            nbrRandom = (rand()%81)+1;
+            nbrPossible = enleverUneCase(grille, nbrRandom);
+            if (nbrPossible == 1) {
+                succes = 0;
+            }
+            else {
+                succes = 1;
+            }
+        }
+    }
+
+}
+int enleverUneCase(char *grille, int nbrRandom) {
+    int nbrPossibilite, oldNbr, i;
+    int BFPossibilite;
+    char grilleTest[81]={0};
 
 
+    while(grille[nbrRandom] == NULL) {
+        nbrRandom = (rand()%81)+1 ;
+        printf("nrbRandom = %d\n", nbrRandom);
+    }
+    oldNbr = (int)(grille[nbrRandom]);
+   /* printf("OldNbr = %d\n", oldNbr);
+    system("PAUSE");*/
+    grille[nbrRandom] = NULL;
+    for(i=0;i<81;i++){ // Il y a plus simple ici no?
+        grilleTest[i] = grille[i];
+    }
+
+    char *possibilitesTab;
+    possibilitesTab = valideUnecase(nbrRandom, grille);
+    nbrPossibilite = (int)(possibilitesTab[0]);
+
+    for(i=1;i<nbrPossibilite+1;i++) {
+        if(possibilitesTab[i] != 0 && i != oldNbr){
+            printf("possibiliteTab[%d] = %d", i, possibilitesTab[i]);
+            BFPossibilite = resoudreBruteForce(grilleTest); // il faut renvoyer quelques chose !
+            if (BFPossibilite = 1) {
+                free(possibilitesTab);
+                grille[nbrRandom] = oldNbr;
+                return 1;
+            }
+        }
+    }
+
+
+    free(possibilitesTab);
+    return 0;
+}
