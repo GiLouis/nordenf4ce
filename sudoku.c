@@ -18,11 +18,9 @@ void generer(char* grille){
     //genererNearWorstCaseInv(grille); // Bruteforce -> 0.1sec
     //genererNearWorstCase (grille); // Bruteforce --> 261 sec
     //genererStarBurstLeo(grille); //Bruteforce->2sec
+    genererSdk(grille);
 
 
-    genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
-    resoudreBruteForce(grille);
-    enleverCases(grille);
     updateGrille(grille);
 }
 
