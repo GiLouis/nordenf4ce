@@ -500,3 +500,32 @@ LRESULT CALLBACK WindowProcedure2 (HWND hwnd, UINT message, WPARAM wParam, LPARA
     }
     return 0;
 }
+void print(char* grille) // Fonction imprimer la grille dans un format csv avec séparateur ","
+{
+    FILE* fichier = NULL;
+    int i;
+    fichier = fopen("grille.csv", "w+"); //  lecture et écriture, avec suppression du contenu au préalable.
+    if (fichier != NULL)
+    {
+        for(i=0;i<81;i++) {
+        printf("%d",grille[i]);
+        fprintf(fichier, "%d ", grille[i]);
+        fprintf(fichier, ",");
+        if((i+1)%3==0){
+            printf("|");
+
+            }
+        if((i+1)%9==0){
+            printf("\n");
+            fprintf(fichier, "\n");
+            }
+        }
+
+        fclose(fichier);
+    }
+    else
+    {
+        printf("Erreur fichier : grille.csv ne repond pas correctement");
+    }
+    return 0;
+}

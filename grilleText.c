@@ -8,6 +8,7 @@ int genererSdk(char *grille, int difficulte) {
     genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
     resoudreBruteForce(grille);
     enleverCases(grille, difficulte);
+    print(grille); // On imprime pour tester
 }
 
 void genererEaster(char* grille){
