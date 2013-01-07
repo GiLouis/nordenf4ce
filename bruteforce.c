@@ -239,9 +239,4 @@ int resoudreBruteForceGenerator(char *grille) { // Cette resolution est légéreme
     }
     return 1;
 }
-int genererSdk(char *grille) {
 
-    genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
-    resoudreBruteForce(grille);
-    enleverCases(grille, 50);
-}

@@ -3,6 +3,13 @@
 #include <time.h>
 #include "grilleText.h"
 
+int genererSdk(char *grille, int difficulte) {
+    viderSudoku(grille);
+    genererTwoLigne(grille); // Bruteforce_moy ->0.01sec
+    resoudreBruteForce(grille);
+    enleverCases(grille, difficulte);
+}
+
 void genererEaster(char* grille){
 
     // Easter Monster

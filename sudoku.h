@@ -1,6 +1,6 @@
 typedef struct paramsThreadVerifValidite paramsThreadVerifValidite;
 
-void generer(char* grille);
+void generer(char* grille, int difficulte);
 char* valideGrille(char* grille);
 void verifValidite(paramsThreadVerifValidite* param);
 void valide3x3(paramsThreadVerifValidite* param);

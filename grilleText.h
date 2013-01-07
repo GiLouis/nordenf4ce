@@ -4,3 +4,4 @@ void genererTwoLigne(char* grille);
 void genererNearWorstCase (char* grille);
 void genererNearWorstCaseInv (char* grille);
 void genererStarBurstLeo (char* grille);
+int genererSdk(char *grille, int difficulte);

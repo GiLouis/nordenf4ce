@@ -425,7 +425,7 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton generer\n");
-            generer(grille);
+            generer(grille, 25);
             break;
         case DEBUG_BUTTON:
             // Demander à la fonction de générer un sudoku

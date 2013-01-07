@@ -5,4 +5,4 @@ int resoudreBruteForce (char *grille);
 void enleverCases(char *grille, int difficulte);
 int enleverUneCase(char *grille, int nbrRandom);
 int resoudreBruteForceGenerator (char *grille);
-int genererSdk(char *grille);
+
