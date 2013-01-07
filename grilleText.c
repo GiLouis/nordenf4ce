@@ -36,6 +36,7 @@ void genererEaster(char* grille){
     grille[73]=6;
     grille[75]=3;
 
+    print(grille);
     return grille;
 }
 void generer20Min(char* grille){

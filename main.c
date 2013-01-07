@@ -10,6 +10,11 @@
 #define GEN_BUTTON 2
 #define EMPTY_BUTTON 3
 #define DEBUG_BUTTON 4
+#define GENMO_BUTTON 8
+#define GENHA_BUTTON 9
+#define SAUV_BUTTON 10
+#define LIRE_BUTTON 11
+
 #define OK_BUTTON 5
 #define ANNUL_BUTTON 6
 #define TEXT_EDIT 7
@@ -207,7 +212,7 @@ void FillWindows(HWND windowsInstance){
     SendMessage(hwndButtonRes, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
     HWND hwndButtonGen = CreateWindow(
                 "BUTTON",  // Predefined class; Unicode assumed
-                "Générer",      // Button text
+                "Générer Facile",      // Button text
                 WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
                 120,         // x position
                 10,         // y position
@@ -247,6 +252,67 @@ void FillWindows(HWND windowsInstance){
                 NULL
                 );
     SendMessage(hwndButtonDebug, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
+
+    HWND hwndButtonGenMo = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Générer Moyen",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
+                120,         // x position
+                40,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)GENHA_BUTTON,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndButtonGenMo, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
+    HWND hwndButtonGenHa = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Générer Difficile",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
+                120,         // x position
+                70,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)GENHA_BUTTON,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndButtonGenHa, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
+    HWND hwndButtonSauv = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Sauvegarder",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
+                230,         // x position
+                40,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)SAUV_BUTTON,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndButtonSauv, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+    HWND hwndButtonLire = CreateWindow(
+                "BUTTON",  // Predefined class; Unicode assumed
+                "Lire",      // Button text
+                WS_TABSTOP | WS_VISIBLE | WS_CHILD,  // Styles
+                230,         // x position
+                70,         // y position
+                100,        // Button width
+                20,        // Button height
+                windowsInstance,     // Parent window
+                (HMENU)LIRE_BUTTON,
+                globHInstance,
+                NULL
+                );
+    SendMessage(hwndButtonLire, WM_SETFONT, (WPARAM)(HFONT)GetStockObject(DEFAULT_GUI_FONT), TRUE);
+
 
     int i=0;
     int j=0;
@@ -424,13 +490,33 @@ void gererActions(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam){
             break;
         case GEN_BUTTON:
             // Demander à la fonction de générer un sudoku
-            printf("Appui du bouton generer\n");
+            printf("Appui du bouton generer facile\n");
+            generer(grille, 45);
+            break;
+        case GENMO_BUTTON:
+            // Demander à la fonction de générer un sudoku
+            printf("Appui du bouton generer moyen\n");
             generer(grille, 35);
+            break;
+        case GENHA_BUTTON:
+            // Demander à la fonction de générer un sudoku
+            printf("Appui du bouton generer difficile\n");
+            generer(grille, 32);
             break;
         case DEBUG_BUTTON:
             // Demander à la fonction de générer un sudoku
             printf("Appui du bouton debug\n");
             grilleGenDebug();
+            break;
+        case SAUV_BUTTON:
+            // Demander à la fonction de sauvegarder le fichier
+            printf("Appui du bouton sauver\n");
+            print(grille);
+            break;
+        case LIRE_BUTTON:
+            // Demander à la fonction de lire le fichier
+            printf("Appui du bouton lire\n");
+            lire(grille);
             break;
         case EMPTY_BUTTON:
             // Demander à la fonction de vider la grille
@@ -504,7 +590,12 @@ void print(char* grille) // Fonction imprimer la grille dans un format csv avec 
 {
     FILE* fichier = NULL;
     int i;
-    fichier = fopen("grille.csv", "w+"); //  lecture et écriture, avec suppression du contenu au préalable.
+    int v = 1;
+    char str[5];
+    sprintf(str, "%d", v);
+
+    char monFichier[16] = "grille.csv";
+    fichier = fopen(monFichier, "w+"); //  lecture et écriture, avec suppression du contenu au préalable.
     if (fichier != NULL)
     {
         for(i=0;i<81;i++) {
@@ -520,6 +611,29 @@ void print(char* grille) // Fonction imprimer la grille dans un format csv avec 
             fprintf(fichier, "\n");
             }
         }
+
+        fclose(fichier);
+    }
+    else
+    {
+        printf("Erreur fichier : grille.csv ne repond pas correctement");
+    }
+    return 0;
+}
+void lire(char* grille)
+{
+    FILE* fichier = NULL;
+    int i;
+
+    char monFichier[16] = "grille.csv";
+    fichier = fopen(monFichier, "r"); //  lecture
+    if (fichier != NULL)
+    {
+        for(i=0;i<81;i++) {
+            fscanf(fichier,"%d ",&(grille[i]));
+            fseek(fichier,1,SEEK_CUR);
+        }
+        updateGrille(grille);
 
         fclose(fichier);
     }

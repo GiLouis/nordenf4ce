@@ -13,12 +13,12 @@ typedef struct paramsThreadVerifValidite{
 
 void generer(char* grille, int difficulte){
 
-    genererEaster(grille); // Bruteforce -> 0.01sec
+    //genererEaster(grille); // Bruteforce -> 0.01sec
     //generer20Min(grille); // Bruteforce ->0.014sec
     //genererNearWorstCaseInv(grille); // Bruteforce -> 0.1sec
     //genererNearWorstCase (grille); // Bruteforce --> 261 sec
     //genererStarBurstLeo(grille); //Bruteforce->2sec
-    //genererSdk(grille, difficulte);
+    genererSdk(grille, difficulte);
 
 
     updateGrille(grille);
